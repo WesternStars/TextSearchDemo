@@ -70,7 +70,7 @@ class RunTest {
         pathMockedStatic.when(() -> Path.of(Mockito.anyString())).thenReturn(mockPath);
         filesMockedStatic.when(() -> Files.readAllLines(mockPath)).thenReturn(getTestText());
 
-        Run run = new Run("url.txt", " Test,Test2", aggregator, executorService);
+        Run run = new Run("url.txt", " Test,Test2", aggregator);
         run.scan();
 
         verify(executorService, times(1)).submit(matchCaptor.capture());

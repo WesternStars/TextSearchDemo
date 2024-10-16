@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.stream.Stream;
@@ -16,10 +17,10 @@ public class Match implements Callable<Map<String, List<Position>>> {
     private static final Logger LOGGER = LoggerFactory.getLogger(Match.class);
 
     private final Set<String>  matchValue;
-    private final List<Map.Entry<Integer, String>> lines;
+    private final List<Entry<Integer, String>> lines;
     private final Map<String, List<Position>> resultMatch = new HashMap<>();
 
-    public Match(List<Map.Entry<Integer, String>> lines, Set<String> matchValue) {
+    public Match(List<Entry<Integer, String>> lines, Set<String> matchValue) {
         this.lines = lines;
         this.matchValue = matchValue;
     }
@@ -40,7 +41,7 @@ public class Match implements Callable<Map<String, List<Position>>> {
         return lines.stream()
                 .flatMap(line -> {
                     List<Integer> inLine = checkLine(search, line.getValue());
-                    return collecting(line.getKey(), inLine);
+                    return collecting(line.getKey() + 1, inLine);
                 })
                 .toList();
     }

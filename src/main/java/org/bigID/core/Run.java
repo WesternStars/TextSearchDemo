@@ -10,65 +10,61 @@ import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import static java.util.stream.Collectors.collectingAndThen;
+import static java.util.stream.Collectors.toList;
 
 public class Run {
 
     private static final int LINES_IN_BLOCK = 1000;
 
-    private final String resourcePath;
-    private final Set<String> matchValue;
+    private final String link;
+    private final String searchWords;
     private final Aggregator aggregator;
-    private final ExecutorService executor;
 
     public Run(String link, String searchWords) {
         this(link, searchWords, new Aggregator());
     }
 
     public Run(String link, String searchWords, Aggregator aggregator) {
-        this(link, searchWords, aggregator, Executors.newFixedThreadPool(5));
-    }
-
-    public Run(String link, String searchWords, Aggregator aggregator, ExecutorService executor) {
-        resourcePath = link;
-        matchValue = Arrays.stream(searchWords.split(","))
-                .map(String::trim)
-                .collect(Collectors.toSet());
-        this.executor = executor;
+        this.link = link;
+        this.searchWords = searchWords;
         this.aggregator = aggregator;
     }
 
     public void scan() {
-        Path path = Path.of(resourcePath);
-        AtomicInteger count = new AtomicInteger(1);
-        List<Future<Map<String, List<Position>>>> futures;
-        try {
-            futures = Files.readAllLines(path)
-                    .stream()
-                    .map(line -> Map.entry(count.getAndIncrement(), line))
-                    .collect(Collectors.groupingBy(e -> e.getKey() / LINES_IN_BLOCK))
-                    .values()
-                    .stream()
-                    .map(e -> executor.submit(new Match(e, matchValue)))
-                    .toList();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        } finally {
-            executor.shutdown();
+        Objects.requireNonNull(link, "Link argument is null");
+        Objects.requireNonNull(searchWords, "Searching words argument is null");
+        Objects.requireNonNull(aggregator, "Aggregator argument is null");
+
+        Path resourcePath = Path.of(link);
+        AtomicInteger count = new AtomicInteger();
+        Set<String> matchValue = Arrays.stream(searchWords.split(","))
+                .map(String::trim)
+                .collect(Collectors.toSet());
+
+        if (matchValue.isEmpty()) {
+            throw new IllegalArgumentException("Search words argument is empty");
         }
 
-        echo(aggregator.aggregateByName(futures));
-    }
-
-    private void echo(Map<String, List<Position>> groupedPositions) {
-        groupedPositions.forEach((key, value) -> {
-            String format = String.format("%s --> %s", key, value);
-            System.out.println(format);
-        });
+        try (var lines = Files.lines(resourcePath); var executor = Executors.newThreadPerTaskExecutor(Thread::new)) {
+            lines.map(line -> Map.entry(count.getAndIncrement(), line))
+                    .collect(Collectors.groupingBy(e -> e.getKey() / LINES_IN_BLOCK))
+                    .values()
+                    .parallelStream()
+                    .map(e -> executor.submit(new Match(e, matchValue)))
+                    .collect(collectingAndThen(toList(), aggregator::aggregateByName))
+                    .forEach((key, value) -> System.out.printf("%s --> %s%n", key, value));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
