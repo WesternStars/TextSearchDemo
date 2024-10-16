@@ -22,6 +22,7 @@ public class Run {
 
     private final String resourcePath;
     private final Set<String> matchValue;
+    private final Aggregator aggregator = new Aggregator();
     private final ExecutorService executor = Executors.newFixedThreadPool(5);
 
     public Run(String link, String r) {
@@ -50,6 +51,6 @@ public class Run {
             executor.shutdown();
         }
 
-        new Aggregator().aggregate(futures);
+        System.out.println(aggregator.aggregateByName(futures));
     }
 }
