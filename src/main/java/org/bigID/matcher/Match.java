@@ -11,13 +11,13 @@ import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.stream.Stream;
 
-public class Match implements Callable<Map<String, List<Map.Entry<Integer, Integer>>>> {
+public class Match implements Callable<Map<String, List<Position>>> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Match.class);
 
     private final Set<String>  matchValue;
     private final List<Map.Entry<Integer, String>> lines;
-    private final Map<String, List<Map.Entry<Integer, Integer>>> resultMatch = new HashMap<>();
+    private final Map<String, List<Position>> resultMatch = new HashMap<>();
 
     public Match(List<Map.Entry<Integer, String>> lines, Set<String> matchValue) {
         this.lines = lines;
@@ -25,7 +25,7 @@ public class Match implements Callable<Map<String, List<Map.Entry<Integer, Integ
     }
 
     @Override
-    public Map<String, List<Map.Entry<Integer, Integer>>> call() {
+    public Map<String, List<Position>> call() {
         for (String m : matchValue) {
             var entries = checkBlock(m);
             if (!entries.isEmpty()) {
@@ -36,7 +36,7 @@ public class Match implements Callable<Map<String, List<Map.Entry<Integer, Integ
         return resultMatch;
     }
 
-    private List<Map.Entry<Integer, Integer>> checkBlock(String search) {
+    private List<Position> checkBlock(String search) {
         return lines.stream()
                 .flatMap(line -> {
                     List<Integer> inLine = checkLine(search, line.getValue());
@@ -59,7 +59,7 @@ public class Match implements Callable<Map<String, List<Map.Entry<Integer, Integ
         return lineResult;
     }
 
-    private static Stream<Map.Entry<Integer, Integer>> collecting(Integer lineNumber, List<Integer> inLine) {
-        return inLine.stream().map(i -> Map.entry(lineNumber, i));
+    private static Stream<Position> collecting(Integer lineNumber, List<Integer> inLine) {
+        return inLine.stream().map(i -> new Position(lineNumber, i));
     }
 }

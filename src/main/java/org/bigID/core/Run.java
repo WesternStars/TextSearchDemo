@@ -2,6 +2,7 @@ package org.bigID.core;
 
 import org.bigID.aggregator.Aggregator;
 import org.bigID.matcher.Match;
+import org.bigID.matcher.Position;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -35,7 +36,7 @@ public class Run {
     public void scan() {
         Path path = Path.of(resourcePath);
         AtomicInteger count = new AtomicInteger(1);
-        List<Future<Map<String, List<Map.Entry<Integer, Integer>>>>> futures;
+        List<Future<Map<String, List<Position>>>> futures;
         try {
             futures = Files.readAllLines(path)
                     .stream()
@@ -51,6 +52,13 @@ public class Run {
             executor.shutdown();
         }
 
-        System.out.println(aggregator.aggregateByName(futures));
+        echo(aggregator.aggregateByName(futures));
+    }
+
+    private void echo(Map<String, List<Position>> groupedPositions) {
+        groupedPositions.forEach((key, value) -> {
+            String format = String.format("%s --> %s", key, value);
+            System.out.println(format);
+        });
     }
 }
