@@ -3,7 +3,6 @@ package org.bigID.matcher;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -40,24 +39,18 @@ public class Match implements Callable<Map<String, List<Position>>> {
     private List<Position> checkBlock(String search) {
         return lines.stream()
                 .flatMap(line -> {
-                    List<Integer> inLine = checkLine(search, line.getValue());
+                    List<Integer> inLine = checkLine(search, line.getValue(), 0).toList();
                     return collecting(line.getKey() + 1, inLine);
                 })
                 .toList();
     }
 
-    private List<Integer> checkLine(String search, String line) {
-        int index = 0;
-        List<Integer> lineResult = new ArrayList<>();
-        while (true) {
-            index = line.indexOf(search, index);
-            if (index < 0) {
-                break;
-            }
-            lineResult.add(index + 1);
-            index++;
+    private Stream<Integer> checkLine(String search, String line, int cursor) {
+        int index = line.indexOf(search, cursor);
+        if (index < 0) {
+            return Stream.empty();
         }
-        return lineResult;
+        return Stream.concat(Stream.of(index + 1), checkLine(search, line, index + search.length()));
     }
 
     private static Stream<Position> collecting(Integer lineNumber, List<Integer> inLine) {
