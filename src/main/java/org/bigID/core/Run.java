@@ -23,14 +23,24 @@ public class Run {
 
     private final String resourcePath;
     private final Set<String> matchValue;
-    private final Aggregator aggregator = new Aggregator();
-    private final ExecutorService executor = Executors.newFixedThreadPool(5);
+    private final Aggregator aggregator;
+    private final ExecutorService executor;
 
-    public Run(String link, String r) {
+    public Run(String link, String searchWords) {
+        this(link, searchWords, new Aggregator());
+    }
+
+    public Run(String link, String searchWords, Aggregator aggregator) {
+        this(link, searchWords, aggregator, Executors.newFixedThreadPool(5));
+    }
+
+    public Run(String link, String searchWords, Aggregator aggregator, ExecutorService executor) {
         resourcePath = link;
-        matchValue = Arrays.stream(r.split(","))
+        matchValue = Arrays.stream(searchWords.split(","))
                 .map(String::trim)
                 .collect(Collectors.toSet());
+        this.executor = executor;
+        this.aggregator = aggregator;
     }
 
     public void scan() {
