@@ -2,28 +2,25 @@ package org.bigID.core;
 
 import org.bigID.aggregator.Aggregator;
 import org.bigID.matcher.Match;
-import org.bigID.matcher.Position;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
-import java.util.concurrent.ExecutorService;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.collectingAndThen;
 import static java.util.stream.Collectors.toList;
 
 public class Run {
 
+    private static final int TIMEOUT = 200;
     private static final int LINES_IN_BLOCK = 1000;
 
     private final String link;
@@ -60,7 +57,8 @@ public class Run {
                     .collect(Collectors.groupingBy(e -> e.getKey() / LINES_IN_BLOCK))
                     .values()
                     .parallelStream()
-                    .map(e -> executor.submit(new Match(e, matchValue)))
+                    .map(e -> CompletableFuture.supplyAsync(new Match(e, matchValue), executor))
+                    .map(CompletableFuture::join)
                     .collect(collectingAndThen(toList(), aggregator::aggregateByName))
                     .forEach((key, value) -> System.out.printf("%s --> %s%n", key, value));
         } catch (IOException e) {

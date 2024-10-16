@@ -9,9 +9,10 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.concurrent.Callable;
+import java.util.function.Supplier;
 import java.util.stream.Stream;
 
-public class Match implements Callable<Map<String, List<Position>>> {
+public class Match implements Supplier<Map<String, List<Position>>> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Match.class);
 
@@ -25,7 +26,7 @@ public class Match implements Callable<Map<String, List<Position>>> {
     }
 
     @Override
-    public Map<String, List<Position>> call() {
+    public Map<String, List<Position>> get() {
         for (String m : matchValue) {
             var entries = checkBlock(m);
             if (!entries.isEmpty()) {
