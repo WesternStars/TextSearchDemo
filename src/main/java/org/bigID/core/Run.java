@@ -20,7 +20,6 @@ import static java.util.stream.Collectors.toList;
 
 public class Run {
 
-    private static final int TIMEOUT = 200;
     private static final int LINES_IN_BLOCK = 1000;
 
     private final String link;
