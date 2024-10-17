@@ -41,15 +41,15 @@ public class Run {
         Objects.requireNonNull(searchWords, "Searching words argument is null");
         Objects.requireNonNull(aggregator, "Aggregator argument is null");
 
+        if (searchWords.isEmpty()) {
+            throw new IllegalArgumentException("Search words argument is empty");
+        }
+
         Path resourcePath = Path.of(link);
         AtomicInteger count = new AtomicInteger();
         Set<String> matchValue = Arrays.stream(searchWords.split(","))
                 .map(String::trim)
                 .collect(Collectors.toSet());
-
-        if (matchValue.isEmpty()) {
-            throw new IllegalArgumentException("Search words argument is empty");
-        }
 
         try (var lines = Files.lines(resourcePath); var executor = Executors.newThreadPerTaskExecutor(Thread::new)) {
             lines.map(line -> Map.entry(count.getAndIncrement(), line))

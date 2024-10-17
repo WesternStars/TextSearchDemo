@@ -11,6 +11,6 @@ public class Main {
             Peter,Harold,Douglas,Henry,Carl,Arthur,Ryan,Roger""";
 
     public static void main(String[] args) {
-        new Run("./big.txt", matchValue).scan();
+        new Run("big.txt", matchValue).scan();
     }
 }
