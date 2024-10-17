@@ -7,7 +7,7 @@ program should be composed of the following modules:
    strings. The result is a map from a word to its location(s) in the text
 3. The aggregator - aggregates the results from all the matchers and prints the results.
 
-For this task, please use the text at _src/main/resources/big.txt_, and the strings to find should be the 50 most common English first names: ```James,John,Robert,Michael,William,David,Richard,Charles,Joseph,Thomas,Christopher,Daniel,Paul,Mark,Donald,George,Kenneth,Steven,Edward,Brian,Ronald,Anthony,Kevin,Jason,Matthew,Gary,Timothy,Jose,Larry,Jeffrey,Frank,Scott,Eric,Stephen,Andrew,Raymond,Gregory,Joshua,Jerry,Dennis,Walter,Patrick,Peter,Harold,Douglas,Henry,Carl,Arthur,Ryan,Roger```
+For this task, please use the text at http://norvig.com/big.txt, and the strings to find should be the 50 most common English first names: ```James,John,Robert,Michael,William,David,Richard,Charles,Joseph,Thomas,Christopher,Daniel,Paul,Mark,Donald,George,Kenneth,Steven,Edward,Brian,Ronald,Anthony,Kevin,Jason,Matthew,Gary,Timothy,Jose,Larry,Jeffrey,Frank,Scott,Eric,Stephen,Andrew,Raymond,Gregory,Joshua,Jerry,Dennis,Walter,Patrick,Peter,Harold,Douglas,Henry,Carl,Arthur,Ryan,Roger```
 
 Example of one line from the program output based on the input above: ``` Timothy --> [[lineOffset=13000, charOffset=19775], [lineOffset=13000, charOffset=42023]]```
 
