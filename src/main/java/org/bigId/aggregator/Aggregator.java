@@ -1,6 +1,6 @@
-package org.bigID.aggregator;
+package org.bigId.aggregator;
 
-import org.bigID.matcher.Position;
+import org.bigId.matcher.Position;
 
 import java.util.Collection;
 import java.util.Comparator;

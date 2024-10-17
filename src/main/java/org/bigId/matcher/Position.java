@@ -1,4 +1,4 @@
-package org.bigID.matcher;
+package org.bigId.matcher;
 
 public record Position(int lineOffset, int charOffset) {
 

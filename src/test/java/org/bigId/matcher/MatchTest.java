@@ -1,4 +1,4 @@
-package org.bigID.matcher;
+package org.bigId.matcher;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

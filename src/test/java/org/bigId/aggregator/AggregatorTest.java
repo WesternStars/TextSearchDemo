@@ -1,6 +1,6 @@
-package org.bigID.aggregator;
+package org.bigId.aggregator;
 
-import org.bigID.matcher.Position;
+import org.bigId.matcher.Position;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

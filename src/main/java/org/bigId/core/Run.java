@@ -1,7 +1,7 @@
-package org.bigID.core;
+package org.bigId.core;
 
-import org.bigID.aggregator.Aggregator;
-import org.bigID.matcher.Match;
+import org.bigId.aggregator.Aggregator;
+import org.bigId.matcher.Match;
 
 import java.io.IOException;
 import java.nio.file.Files;

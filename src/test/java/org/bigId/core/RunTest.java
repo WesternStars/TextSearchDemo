@@ -1,6 +1,6 @@
-package org.bigID.core;
+package org.bigId.core;
 
-import org.bigID.aggregator.Aggregator;
+import org.bigId.aggregator.Aggregator;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

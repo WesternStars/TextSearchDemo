@@ -1,6 +1,6 @@
-package org.bigID;
+package org.bigId;
 
-import org.bigID.core.Run;
+import org.bigId.core.Run;
 
 public class Main {
 
